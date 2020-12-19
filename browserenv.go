@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/pkg/browser"
 )
@@ -12,6 +13,18 @@ var Stderr io.Writer = os.Stderr
 var Stdout io.Writer = os.Stdout
 
 func OpenFile(path string) error {
+	envCommand := envBrowserCommand()
+	if envCommand != "" {
+		path, err := filepath.Abs(path)
+		if err != nil {
+			return err
+		}
+
+		url := "file://" + path
+
+		return runBrowserCommand(envCommand, url)
+	}
+
 	return browser.OpenFile(path)
 }
 
