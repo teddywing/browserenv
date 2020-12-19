@@ -2,6 +2,7 @@ package browserenv
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -29,6 +30,21 @@ func OpenFile(path string) error {
 }
 
 func OpenReader(r io.Reader) error {
+	envCommand := envBrowserCommand()
+	if envCommand != "" {
+		tempFile, err := ioutil.TempFile("", "browserenv")
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(tempFile, r)
+		if err != nil {
+			return err
+		}
+
+		return OpenFile(tempFile.Name())
+	}
+
 	return browser.OpenReader(r)
 }
 
