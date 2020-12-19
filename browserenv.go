@@ -3,6 +3,7 @@ package browserenv
 import (
 	"io"
 	"os"
+	"os/exec"
 
 	"github.com/pkg/browser"
 )
@@ -19,5 +20,32 @@ func OpenReader(r io.Reader) error {
 }
 
 func OpenURL(url string) error {
+	envCommand := envBrowserCommand()
+	if envCommand != "" {
+		return runBrowserCommand(envCommand, url)
+	}
+
 	return browser.OpenURL(url)
+}
+
+// TODO
+func envBrowserCommand() string {
+	return os.Getenv("BROWSER")
+}
+
+// TODO
+func runBrowserCommand(command, url string) error {
+	return browserCommand(command, url).Run()
+}
+
+// TODO
+func browserCommand(command, url string) *exec.Cmd {
+	shellArgs := shell()
+	shell := shellArgs[0]
+	args := shellArgs[1:]
+
+	command = fmtBrowserCommand(command, url)
+	args = append(args, command)
+
+	return exec.Command(shell, args...)
 }
