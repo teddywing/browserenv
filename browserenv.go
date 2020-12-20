@@ -82,7 +82,7 @@ func browserCommand(command, url string) *exec.Cmd {
 	if browserCommandIncludesURL(command) {
 		command = fmtWithURL(command, url)
 	} else {
-		command = escapeBrowserCommand(command, url)
+		command = shellEscapeCommand(command, url)
 	}
 
 	args = append(args, command)

@@ -19,7 +19,7 @@ func shell() (args []string) {
 }
 
 // TODO
-func escapeBrowserCommand(browser, url string) string {
+func shellEscapeCommand(browser, url string) string {
 	// TODO: handle %s in browser command
 	return fmt.Sprintf("%s '%s'", browser, url)
 }
