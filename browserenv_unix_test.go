@@ -21,6 +21,18 @@ func TestBrowserCommand(t *testing.T) {
 			"https://duckduckgo.com",
 			"open -a Firefox 'https://duckduckgo.com'",
 		},
+		{
+			"with URL directive at end",
+			"open -a Firefox %s",
+			"https://duckduckgo.com",
+			"open -a Firefox https://duckduckgo.com",
+		},
+		{
+			"with URL directive in middle",
+			"open -a Firefox %s --other-arg",
+			"https://duckduckgo.com",
+			"open -a Firefox https://duckduckgo.com --other-arg",
+		},
 	}
 
 	for _, test := range tests {

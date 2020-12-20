@@ -6,12 +6,16 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/pkg/browser"
 )
 
 var Stderr io.Writer = os.Stderr
 var Stdout io.Writer = os.Stdout
+
+var percentS = regexp.MustCompile("%s[[:^alpha:]]?")
 
 func OpenFile(path string) error {
 	envCommand := envBrowserCommand()
@@ -73,8 +77,22 @@ func browserCommand(command, url string) *exec.Cmd {
 	shell := shellArgs[0]
 	args := shellArgs[1:]
 
-	command = fmtBrowserCommand(command, url)
+	if browserCommandIncludesURL(command) {
+		command = fmtWithURL(command, url)
+	} else {
+		command = fmtBrowserCommand(command, url)
+	}
+
 	args = append(args, command)
 
 	return exec.Command(shell, args...)
+}
+
+func browserCommandIncludesURL(command string) bool {
+	return percentS.MatchString(command)
+}
+
+func fmtWithURL(command, url string) string {
+	// TODO: shellescape URL
+	return strings.ReplaceAll(command, "%s", url)
 }
