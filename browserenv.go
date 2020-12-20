@@ -121,7 +121,6 @@ func browserCommandIncludesURL(command string) bool {
 }
 
 func fmtWithURL(command, url string) string {
-	// TODO: shellescape URL
 	return strings.ReplaceAll(command, "%s", url)
 }
 
