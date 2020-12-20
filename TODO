@@ -1,6 +1,6 @@
 TODO
 
 2020.12.19:
-- Set stdin stdout on envbrowser exec.Cmd
+v Set stdin stdout on envbrowser exec.Cmd
 v %s parsing in BROWSER
 - Support colon-separated list of commands in BROWSER
