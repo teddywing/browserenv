@@ -42,6 +42,8 @@ func OpenFile(path string) error {
 		return runBrowserCommand(envCommand, url)
 	}
 
+	setBrowserStdDescriptors()
+
 	return browser.OpenFile(path)
 }
 
@@ -63,6 +65,8 @@ func OpenReader(r io.Reader) error {
 		return OpenFile(tempFile.Name())
 	}
 
+	setBrowserStdDescriptors()
+
 	return browser.OpenReader(r)
 }
 
@@ -72,6 +76,8 @@ func OpenURL(url string) error {
 	if envCommand != "" {
 		return runBrowserCommand(envCommand, url)
 	}
+
+	setBrowserStdDescriptors()
 
 	return browser.OpenURL(url)
 }
@@ -149,4 +155,11 @@ func fmtWithURL(command, url string) string {
 // entity.
 func escapeURL(url string) string {
 	return strings.ReplaceAll(url, "'", "%27")
+}
+
+// setBrowserStdDescriptors sets browser.Stderr and browser.Stdout to Stderr
+// and Stdout respectively.
+func setBrowserStdDescriptors() {
+	browser.Stderr = Stderr
+	browser.Stdout = Stdout
 }

@@ -131,3 +131,31 @@ func TestOpenURLMultipleBrowserCommands(t *testing.T) {
 
 	unsetEnvBrowser(t)
 }
+
+func TestOpenFilePkgBrowserUsesStderr(t *testing.T) {
+	var stderr strings.Builder
+	Stderr = &stderr
+
+	OpenFile("file:///tmp/does-not-exist")
+
+	got := stderr.String()
+	if got == "" {
+		t.Errorf("got empty stderr want an error message")
+	}
+
+	unsetEnvBrowser(t)
+}
+
+func TestOpenURLPkgBrowserUsesStderr(t *testing.T) {
+	var stderr strings.Builder
+	Stderr = &stderr
+
+	OpenURL("file:///tmp/does-not-exist")
+
+	got := stderr.String()
+	if got == "" {
+		t.Errorf("got empty stderr want an error message")
+	}
+
+	unsetEnvBrowser(t)
+}
