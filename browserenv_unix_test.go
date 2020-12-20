@@ -9,6 +9,15 @@ import (
 	"testing"
 )
 
+func unsetEnvBrowser(t *testing.T) {
+	t.Helper()
+
+	err := os.Unsetenv("BROWSER")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestBrowserCommand(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -76,6 +85,8 @@ func TestOpenURLStdout(t *testing.T) {
 	if got != url {
 		t.Errorf("got stdout value %q want %q", got, url)
 	}
+
+	unsetEnvBrowser(t)
 }
 
 func TestOpenURLStderr(t *testing.T) {
@@ -95,6 +106,8 @@ func TestOpenURLStderr(t *testing.T) {
 	if got != url {
 		t.Errorf("got stdout value %q want %q", got, url)
 	}
+
+	unsetEnvBrowser(t)
 }
 
 func TestOpenURLMultipleBrowserCommands(t *testing.T) {
@@ -115,4 +128,6 @@ func TestOpenURLMultipleBrowserCommands(t *testing.T) {
 	if got != url {
 		t.Errorf("got stdout value %q want %q", got, url)
 	}
+
+	unsetEnvBrowser(t)
 }
