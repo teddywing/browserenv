@@ -1,9 +1,0 @@
-TODO
-
-2020.12.19:
-v Set stdin stdout on envbrowser exec.Cmd (2020.12.20)
-v %s parsing in BROWSER
-v Support colon-separated list of commands in BROWSER (2020.12.20)
-
-2020.12.20:
-v Set `pkg/browser`'s Stdout Stderr to ours
