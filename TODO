@@ -4,3 +4,6 @@ TODO
 v Set stdin stdout on envbrowser exec.Cmd
 v %s parsing in BROWSER
 - Support colon-separated list of commands in BROWSER
+
+2020.12.20:
+- Set `pkg/browser`'s Stdout Stderr to ours
