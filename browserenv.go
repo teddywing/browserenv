@@ -17,6 +17,8 @@ var Stdout io.Writer = os.Stdout
 
 var percentS = regexp.MustCompile("%s[[:^alpha:]]?")
 
+const commandSeparator = ":"
+
 func OpenFile(path string) error {
 	envCommand := envBrowserCommand()
 	if envCommand != "" {
@@ -67,8 +69,22 @@ func envBrowserCommand() string {
 }
 
 // TODO
-func runBrowserCommand(command, url string) error {
-	return browserCommand(command, url).Run()
+func runBrowserCommand(commands, url string) error {
+	commandList := strings.Split(commands, commandSeparator)
+
+	var err error
+	for _, command := range commandList {
+		cmd := browserCommand(command, url)
+
+		// Keep running commands from left to right until one of them exits
+		// successfully.
+		err = cmd.Run()
+		if err == nil || cmd.ProcessState.ExitCode() == 0 {
+			return err
+		}
+	}
+
+	return err
 }
 
 // TODO

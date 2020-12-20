@@ -96,3 +96,23 @@ func TestOpenURLStderr(t *testing.T) {
 		t.Errorf("got stdout value %q want %q", got, url)
 	}
 }
+
+func TestOpenURLMultipleBrowserCommands(t *testing.T) {
+	// The `test -z URL` command must fail, causing `printf URL` to run.
+	err := os.Setenv("BROWSER", "test -z:printf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var stdout strings.Builder
+	Stdout = &stdout
+
+	url := "http://localhost:8000"
+
+	OpenURL(url)
+
+	got := stdout.String()
+	if got != url {
+		t.Errorf("got stdout value %q want %q", got, url)
+	}
+}
