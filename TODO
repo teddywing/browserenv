@@ -1,0 +1,5 @@
+TODO
+
+2020.12.19:
+- Set stdin stdout on envbrowser exec.Cmd
+- %s parsing in BROWSER
