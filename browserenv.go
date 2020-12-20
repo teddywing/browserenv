@@ -81,7 +81,11 @@ func browserCommand(command, url string) *exec.Cmd {
 
 	args = append(args, command)
 
-	return exec.Command(shell, args...)
+	cmd := exec.Command(shell, args...)
+	cmd.Stdout = Stdout
+	cmd.Stderr = Stderr
+
+	return cmd
 }
 
 func fmtBrowserCommand(command, url string) string {

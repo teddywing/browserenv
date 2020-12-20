@@ -5,6 +5,7 @@ package browserenv
 import (
 	"os"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -55,5 +56,43 @@ func TestBrowserCommand(t *testing.T) {
 				t.Errorf("got args '%#v' want '%#v'", cmd.Args, wantArgs)
 			}
 		})
+	}
+}
+
+func TestOpenURLStdout(t *testing.T) {
+	var stdout strings.Builder
+	Stdout = &stdout
+
+	err := os.Setenv("BROWSER", "printf")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	url := "http://localhost:8000"
+
+	OpenURL(url)
+
+	got := stdout.String()
+	if got != url {
+		t.Errorf("got stdout value %q want %q", got, url)
+	}
+}
+
+func TestOpenURLStderr(t *testing.T) {
+	var stderr strings.Builder
+	Stderr = &stderr
+
+	err := os.Setenv("BROWSER", "printf >&2")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	url := "http://localhost:8000"
+
+	OpenURL(url)
+
+	got := stderr.String()
+	if got != url {
+		t.Errorf("got stdout value %q want %q", got, url)
 	}
 }
