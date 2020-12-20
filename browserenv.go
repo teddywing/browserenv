@@ -12,13 +12,23 @@ import (
 	"github.com/pkg/browser"
 )
 
+// Stderr is the browser command's standard error Writer. Defaults to
+// os.Stderr.
 var Stderr io.Writer = os.Stderr
+
+// Stdout is the browser command's standard output Writer. Defaults to
+// os.Stdout.
 var Stdout io.Writer = os.Stdout
 
+// percentS is a regular expression that matches "%s" not followed by an
+// alphabetic character.
 var percentS = regexp.MustCompile("%s[[:^alpha:]]?")
 
+// commandSeparator is the delimiter used in between multiple commands
+// specified in the BROWSER environment variable.
 const commandSeparator = ":"
 
+// OpenFile opens the file referenced by path in a browser.
 func OpenFile(path string) error {
 	envCommand := envBrowserCommand()
 	if envCommand != "" {
@@ -35,6 +45,8 @@ func OpenFile(path string) error {
 	return browser.OpenFile(path)
 }
 
+// OpenReader copies the contents of r to a temporary file and opens the
+// resulting file in a browser.
 func OpenReader(r io.Reader) error {
 	envCommand := envBrowserCommand()
 	if envCommand != "" {
@@ -54,6 +66,7 @@ func OpenReader(r io.Reader) error {
 	return browser.OpenReader(r)
 }
 
+// OpenURL opens url in a browser.
 func OpenURL(url string) error {
 	envCommand := envBrowserCommand()
 	if envCommand != "" {
@@ -63,12 +76,14 @@ func OpenURL(url string) error {
 	return browser.OpenURL(url)
 }
 
-// TODO
+// envBrowserCommand gets the value of the BROWSER environment variable.
 func envBrowserCommand() string {
 	return os.Getenv("BROWSER")
 }
 
-// TODO
+// runBrowserCommand opens url using commands, a colon-separated string of
+// shell commands. Each command is executed from left to right until one exits
+// with an exit code of 0.
 func runBrowserCommand(commands, url string) error {
 	commandList := strings.Split(commands, commandSeparator)
 
@@ -87,7 +102,8 @@ func runBrowserCommand(commands, url string) error {
 	return err
 }
 
-// TODO
+// browserCommand sets up an exec.Cmd to run command, attaching Stdout and
+// Stderr.
 func browserCommand(command, url string) *exec.Cmd {
 	shellArgs := shell()
 	shell := shellArgs[0]
@@ -104,6 +120,8 @@ func browserCommand(command, url string) *exec.Cmd {
 	return cmd
 }
 
+// fmtBrowserCommand formats command with url, producing a shell command that
+// can be executed with `/bin/sh -c COMMAND`.
 func fmtBrowserCommand(command, url string) string {
 	url = escapeURL(url)
 
@@ -116,14 +134,19 @@ func fmtBrowserCommand(command, url string) string {
 	return command
 }
 
+// browserCommandIncludesURL returns true if command includes a match for the
+// percentS pattern.
 func browserCommandIncludesURL(command string) bool {
 	return percentS.MatchString(command)
 }
 
+// fmtWithURL replaces all occurrences of "%s" in command with url.
 func fmtWithURL(command, url string) string {
 	return strings.ReplaceAll(command, "%s", url)
 }
 
+// escapeURL replaces single quotes ("'") in url with the corresponding URL
+// entity.
 func escapeURL(url string) string {
 	return strings.ReplaceAll(url, "'", "%27")
 }
