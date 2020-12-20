@@ -6,4 +6,4 @@ v %s parsing in BROWSER
 v Support colon-separated list of commands in BROWSER (2020.12.20)
 
 2020.12.20:
-- Set `pkg/browser`'s Stdout Stderr to ours
+v Set `pkg/browser`'s Stdout Stderr to ours
