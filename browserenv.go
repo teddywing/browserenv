@@ -1,3 +1,13 @@
+// Package browserenv allows URLs and files to be opened in a local web
+// browser. The system's default browser is used. If the BROWSER environment
+// variable is set, the command it specifies is used instead.
+//
+// If the BROWSER variable contains the string "%s", that will be replaced with
+// the URL. Otherwise, the URL is appended to the contents of BROWSER as its
+// final argument.
+//
+// BROWSER can contain multiple commands delimited by colons. Each command is
+// tried from left to right, stopping when a command exits with a 0 exit code.
 package browserenv
 
 import (
