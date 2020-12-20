@@ -77,6 +77,14 @@ func browserCommand(command, url string) *exec.Cmd {
 	shell := shellArgs[0]
 	args := shellArgs[1:]
 
+	command = fmtBrowserCommand(command, url)
+
+	args = append(args, command)
+
+	return exec.Command(shell, args...)
+}
+
+func fmtBrowserCommand(command, url string) string {
 	url = escapeURL(url)
 
 	if browserCommandIncludesURL(command) {
@@ -85,9 +93,7 @@ func browserCommand(command, url string) *exec.Cmd {
 		command = shellEscapeCommand(command, url)
 	}
 
-	args = append(args, command)
-
-	return exec.Command(shell, args...)
+	return command
 }
 
 func browserCommandIncludesURL(command string) bool {
