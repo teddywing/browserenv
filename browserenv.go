@@ -77,6 +77,8 @@ func browserCommand(command, url string) *exec.Cmd {
 	shell := shellArgs[0]
 	args := shellArgs[1:]
 
+	url = escapeURL(url)
+
 	if browserCommandIncludesURL(command) {
 		command = fmtWithURL(command, url)
 	} else {
@@ -95,4 +97,8 @@ func browserCommandIncludesURL(command string) bool {
 func fmtWithURL(command, url string) string {
 	// TODO: shellescape URL
 	return strings.ReplaceAll(command, "%s", url)
+}
+
+func escapeURL(url string) string {
+	return strings.ReplaceAll(url, "'", "%27")
 }

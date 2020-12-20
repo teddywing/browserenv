@@ -33,6 +33,12 @@ func TestBrowserCommand(t *testing.T) {
 			"https://duckduckgo.com",
 			"open -a Firefox https://duckduckgo.com --other-arg",
 		},
+		{
+			"escapes single quotes in URL",
+			"open -a Firefox",
+			"https://duckduckgo.com/?q='s-Hertogenbosch",
+			"open -a Firefox 'https://duckduckgo.com/?q=%27s-Hertogenbosch'",
+		},
 	}
 
 	for _, test := range tests {
