@@ -50,7 +50,7 @@ func OpenFile(path string) error {
 	if envCommand != "" {
 		path, err := filepath.Abs(path)
 		if err != nil {
-			return err
+			return &PathResolutionError{path, err}
 		}
 
 		url := "file://" + path
@@ -70,12 +70,12 @@ func OpenReader(r io.Reader) error {
 	if envCommand != "" {
 		tempFile, err := ioutil.TempFile("", "browserenv")
 		if err != nil {
-			return err
+			return &TempFileError{err}
 		}
 
 		_, err = io.Copy(tempFile, r)
 		if err != nil {
-			return err
+			return &CopyError{err}
 		}
 
 		return OpenFile(tempFile.Name())
@@ -110,18 +110,23 @@ func runBrowserCommand(commands, url string) error {
 	commandList := strings.Split(commands, commandSeparator)
 
 	var err error
+	var lastCommand string
 	for _, command := range commandList {
 		cmd := browserCommand(command, url)
 
 		// Keep running commands from left to right until one of them exits
 		// successfully.
 		err = cmd.Run()
-		if err == nil || cmd.ProcessState.ExitCode() == 0 {
-			return err
+		if err == nil {
+			return nil
+		} else if cmd.ProcessState.ExitCode() == 0 {
+			return &ExecZeroError{command, err}
 		}
+
+		lastCommand = command
 	}
 
-	return err
+	return &ExecError{lastCommand, err}
 }
 
 // browserCommand sets up an exec.Cmd to run command, attaching Stdout and
